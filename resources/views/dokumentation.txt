@@ -1,0 +1,144 @@
+Installation
+- composer create-project laravel/laravel event
+- composer require laravel/breeze --dev
+- php artisan breeze:install
+    - Which Breeze stack would you like to install? --> blade (diketik)
+    - Would you like dark mode support? (yes/no) [no] --> yes
+    - Which testing framework do you prefer? [PHPUnit] --> 1 (Pest)
+- code .
+
+Persiapan Database
+- ubah DB file .env menjadi = event
+- buat DB event di localhost
+
+Persiapan Coding
+- php artisan make:model Country -m
+- php artisan make:model City -m
+- php artisan make:model Event -m
+- php artisan make:model Attending -m
+- php artisan make:model Comment -m
+- php artisan make:model Gallery -m
+- php artisan make:model Like -m
+- php artisan make:model SavedEvent -m
+- php artisan make:model Tag -m
+
+Teknis
+- Lengkapi seluruh struktur database pada migrasi
+- Lengkapi isi Seeder
+- php artisan migrate:fresh --seed
+
+Pembuatan Controller
+- php artisan make:controller EventController --resource
+- php artisan make:controller GalleryController --resource
+
+Teknis
+- buat Route untuk Event dan Gallery
+- buat navigasi untuk tombol Event dan Gallery
+- buat function index() untuk view 'events.index' dan 'galleries.index'
+- buat folder view untuk events dan galleries serta buat blade untuk masing-masing file index-nya
+
+Bekerja dengan Model
+- lengkapi model untuk Attending, City, Comment, Country, Event, Gallery, Like, SavedEvent, Tag, User
+
+Teknis
+- pada folder events, buat file index dan create
+- isi function create() pada EventController
+- oke sekarang sudah jadi form nya, kita bisa memilih negara beserta kotanya
+- buat request Permintaan dengan perintah [php artisan make:request CreateEventRequest]
+- ubah authorize yang semula "false" menjadi "true"
+- tambahkan function rules() seperti required"
+- buat function store(); pada EventController
+- lakukan uji coba crud Event dan pastikan harus sudah berhasil
+
+
+Menambahkan Slug
+- hilangkan komentar slug pada hal. index
+- lengkapi EventController pd bagian create dan store
+- buat migrasi untuk hubungan peristiwa dan serangan  [php artisan make:migration create_event_tag_table --create]
+- isi migrasi diatas
+- php artisan migrate
+
+Menampilkan semua acara di dalam satu tampilan (1:10:35)
+- buat view table untuk menampilkan acara di bagian index Event
+- lengkapi dan sesuaikan EventController kembali
+- pastikan nama event sudah muncul
+
+Update Event (1:15:52)
+- buat edit.blade Event dengan cara menduplikat dari create.blade Event, kemudian ubah nama route form method nya
+- ganti setiap placeholder menjadi --> [value="{{ old('num_tickets', $event->num_tickets) }}"]
+- pastikan sekarang tombol edit sudah menampilkan form edit
+
+Kita mulai Update dari Country (1:19:05)
+- buka tampilan edit.blade bagian form Country
+- kita akan gunakan pembantu blade helper yaitu @selected (pilih dan akan dipilih hanya jika disini kita memiliki negara) --> jika ID negara akan menjadi tripoliable dengan ID acara
+- jangan lupa untuk menghapus "x-model" nya
+
+Kita mulai Update dari City
+- berikan tambahan sintaks JS pada sintaks bwah form method [ cityId: @js($event->city_id)  &  cities: @js($event->country->cities) ]
+- pastikan nama kotanya sudah muncul
+- tambahkan pada form city_id :selected --> (kota mana yang akan di pilih untuk di edit) --> artinya "ikat yang dipilih dan itu akan dipilih saja"
+- tambahkan @checked untuk bagian "tags" setelah values --> pastikan sudah berhasil
+
+
+Proses Update All (dari Controller)
+- buat migrasi request Permintaan dengan perintah [php artisan make:request UpdateEventRequest]
+- isi file UpdateEventRequest tersebut
+- buat rumus Controller function update nya di EventController
+- pastikan sekarang sudah bisa mengupdate seluruhnya dengan benar
+
+Teknis
+- hapus seluruh isi acara terlebih dahulu
+- buka file .env dan ubah bagian filesistek disk yang tadinya "local" menjadi "public" --> tujuannya agar nanti semua file tersimpan di bagian public
+
+
+Hapus Event
+- buka navigasi dan copy bagian logout nya
+- buat function destroy nya
+- pastikan berhasil untuk melakukan delete
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  CRUD EVENT SELESAI ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+Gallery
+1. Buat halaman index dan create untuk Gallery sama seperti pada halaman Event
+2. Isi controller index, create, store
+3. coba jalankan, pastikan berhasil
+4. buat function edit()
+5. pastikan hapus sudah bisa
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  CRUD GALLERY SELESAI ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Menampilkan semua acara di halaman berada, tidak hanya acara saya saja tetapi acara pengguna lain juga bisa
+1. Buka app > View/Component > AppLayout.php lalu save as dan ganti nama menjadi MainLayout.php
+2. Buat Controller dengan nama WelcomeController --> pilih yang invokable
+3. Hapus request pada WelcomeController invoke
+4. Ganti setelan routes web.php nya menjadi [Route::get('/', WelcomeController::class)->name('welcome');]
+5. Tambahkan main.blade pada layouts
+6. Tambahkan main-navigation
+7. Ubah halaman isi dashboard dengan componen gambar yang akan di tampilkan
+
+
+Untuk mengakses judul Event
+1. buat controller dengan nama EventShowController --> pilih yang invokable
+
+
+Membuat LikeSystemController
+- tombol like hanya akan bekerja apabila sudah di autentikasi
+
+Bekerja dengan menyimpan dan menghadiri
+1. buat controller untuk AttendingSystemController dan SaveSystemController
+2. buat untuk ketiga routes nya
+
+Membuat komentar
+1. buat controller dengan nama StoreCommentController --> pilih yang invokable
+2. buat controller dengan nama  DeleteCommentController --> pilih yang invokable
+3. tambahkan routes nya untuk Comment
+4. pasang pasangkan route nya ke form yang ada di eventShow.blade.php
+5. lengkapi segala class seperti untuk tombol submit
+6. isi StoreCommentController
+7. pastikan comment sudah bisa berjalan dengan baik
+
+Membuat kebijakan policy CommentPolicy (2:54:48)
+1. buat controller [php artisan make:policy CommentPolicy --model=Comment]
+
