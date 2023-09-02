@@ -1,26 +1,31 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between">
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+            <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
                 {{ __('New Event') }}
             </h2>
         </div>
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
             <form method="POST" action="{{ route('events.store') }}" x-data="{
                 country: null,
                 city: null,
                 cities: [],
                 onCountryChange(event) {
+                    {{-- Ketika Province dipilih ke "Select Province", maka akan mengosongkan data array pada Regency --}}
+                    if (!event.target.value) {
+                        this.cities = [];
+                        return;
+                    }
                     axios.get(`/countries/${event.target.value}`).then(res => {
                         this.cities = res.data
                     })
             
                 }
             }" enctype="multipart/form-data"
-                class="p-4 bg-white dark:bg-slate-800 rounded-md">
+                class="p-4 bg-white rounded-md dark:bg-slate-800">
                 @csrf
                 <div class="grid gap-6 mb-6 md:grid-cols-2">
                     <div>
@@ -35,11 +40,10 @@
                     </div>
                     <div>
                         <label for="country_id"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select an
-                            option</label>
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select Province</label>
                         <select id="country_id" x-model="country" x-on:change="onCountryChange" name="country_id"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                            <option>Choose a country</option>
+                            <option value="">Choose a province</option>
                             @foreach ($countries as $country)
                                 <option :value="{{ $country->id }}">{{ $country->name }}</option>
                             @endforeach
@@ -50,8 +54,7 @@
                     </div>
                     <div>
                         <label for="city_id"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select an
-                            option</label>
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select Regency</label>
                         <select id="city_id" name="city_id"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                             <template x-for="city in cities" :key="city.id">
@@ -83,12 +86,12 @@
                         @enderror
                     </div>
                     <div>
-                        <label for="start_date"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Start Date</label>
-                        <input type="date" id="start_date" name="start_date"
+                        <label for="start_datetime"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Start Date Time</label>
+                        <input type="datetime-local" id="start_datetime" name="start_datetime"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             placeholder="Laravel event">
-                        @error('start_date')
+                        @error('start_datetime')
                             <div class="text-sm text-red-400">{{ $message }}</div>
                         @enderror
                     </div>
@@ -102,26 +105,19 @@
                             <div class="text-sm text-red-400">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div>
-                        <label for="start_time"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Start
-                            Time</label>
-                        <input type="time" id="start_time" name="start_time"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="Laravel event">
-                        @error('start_time')
-                            <div class="text-sm text-red-400">{{ $message }}</div>
-                        @enderror
-                    </div>
+
                     <div>
                         <label for="num_tickets"
                             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nr: Tickets</label>
                         <input type="number" id="num_tickets" name="num_tickets"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             placeholder="1">
-                        @error('num_tickets')
-                            <div class="text-sm text-red-400">{{ $message }}</div>
-                        @enderror
+                        {{-- Menampilkan error message, ketika jumlah tiket 0 atau kurang dari 0 --}}
+                        @if ($errors->has('num_tickets'))
+                            <div class="text-red-400">
+                                {{ $errors->first('num_tickets') }}
+                            </div>
+                        @endif
                     </div>
                     <div>
                         <label for="description"
@@ -137,7 +133,7 @@
                 <div>
                     <h3 class="mb-4 font-semibold text-gray-900 dark:text-white">Tags</h3>
                     <ul
-                        class="my-5 items-center w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg sm:flex dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        class="items-center w-full my-5 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg sm:flex dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                         @foreach ($tags as $tag)
                             <li class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
                                 <div class="flex items-center pl-3">
@@ -149,6 +145,12 @@
                                 </div>
                             </li>
                         @endforeach
+                        <!-- Modal toggle -->
+                        <button data-modal-target="defaultModal" data-modal-toggle="defaultModal"
+                            class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            type="button">
+                            Add New Tags
+                        </button>
                     </ul>
                 </div>
                 <div>
@@ -159,3 +161,53 @@
         </div>
     </div>
 </x-app-layout>
+
+<!-- Main modal -->
+<div id="defaultModal" data-modal-backdrop="defaultModal" tabindex="-1" aria-hidden="true"
+    class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full ">
+    <div class="relative w-full max-w-2xl max-h-full">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <!-- Modal header -->
+            <div class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                    Create New Tag
+                </h3>
+                <button type="button"
+                    class="inline-flex items-center justify-center w-8 h-8 ml-auto text-sm text-gray-400 bg-transparent rounded-lg hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
+                    data-modal-hide="defaultModal">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <!-- Modal body -->
+            <div class="p-6 space-y-6">
+                <form method="POST" action="{{ route('tags.store') }}">
+                    @csrf
+                    <div class="mb-6">
+                        <label for="new_tag"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name Tag : </label>
+                        <input type="text" id="new_tag" name="new_tag"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            placeholder="Add Name Tag" required>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <div
+                        class="flex items-center p-3 space-x-2 border-t border-gray-200 rounded-b dark:border-gray-600">
+                        <button data-modal-hide="defaultModal" type="submit" value="create_tag" name="action"
+                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                            Create</button>
+                        <button data-modal-hide="defaultModal" type="button"
+                            class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
+use Carbon\Carbon;
 
 class CreateEventRequest extends FormRequest
 {
@@ -21,18 +23,31 @@ class CreateEventRequest extends FormRequest
      */
     public function rules(): array
     {
+        $now = Carbon::now();
         return [
             'title' => 'required|max:155|min:2',
             'address' => 'required|max:155|min:2',
-            'image' => 'image|required',
-            'start_date' => 'required',
-            'end_date' => 'required',
-            'start_time' => 'required',
+            'image' => 'required|image|mimes:jpg,png,jpeg,webp,svg|max:1000',  // upload gambar maksimal hanya bisa 1mb
+            'start_datetime' => [
+                'required',
+                'date',
+                'after_or_equal:' . $now->format('Y-m-d H:i:s'),
+                'before_or_equal:end_date',
+                ],
+            'end_date' => [
+                'required',
+                'date',
+                'after_or_equal:start_datetime',     // Memeriksa apakah tanggal setelah atau sama dengan start_datetime
+                ],
             'country_id' => 'required',
             'city_id' => 'required',
             'description' => 'required',
-            'num_tickets' => 'required',
-            'tags' =>  'required|exists:tags,id' // pajak akan di perlukan dan akan ada di tag dan kolomnya akan menjadi ID
+            'num_tickets' => [
+                        'required',
+                        'integer',
+                        'min:1',        // Tiket harus lebih besar atau sama dengan 1
+                        ],
+            'tags.*' =>  'required|exists:tags,id' // pajak akan di perlukan dan akan ada di tag dan kolomnya akan menjadi ID
         ];
     }
 }

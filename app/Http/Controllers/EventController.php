@@ -18,10 +18,17 @@ class EventController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): View
+    public function index(Request $request): View
     {
-        $events = Event::with('country')->get();
-        return view('events.index', compact('events'));
+        $keyword = $request->keyword;
+        $events = Event::with('country')
+        ->where('title', 'LIKE', '%' . $keyword . '%')
+        ->orWhere('start_datetime', 'LIKE', '%' . $keyword . '%')
+        ->orWhereHas('country', function ($query) use ($keyword) {
+            $query->where('name', 'LIKE', '%' . $keyword . '%');
+        })
+        ->get();
+        return view('events.index', compact('events', 'keyword'));
     }
 
     /**

@@ -24,9 +24,8 @@ class Event extends Model
         'title',
         'slug',
         'description',
-        'start_date',
+        'start_datetime',
         'end_date',
-        'start_time',
         'image',
         'address',
         'user_id',
@@ -36,8 +35,8 @@ class Event extends Model
     ];
 
     protected $casts = [
-        'start_date' => 'date:m/d/Y',
-        'end_date' => 'date:m/d/Y',
+        'start_datetime' => 'datetime:d-m-Y, H:i:s',
+        'end_date' => 'date:d/m/Y',
     ];
 
     public function user(): BelongsTo

@@ -2,10 +2,12 @@
 
 use App\Models\Country;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TagController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EventShowController;
 use App\Http\Controllers\EventIndexController;
 use App\Http\Controllers\LikedEventController;
@@ -18,6 +20,7 @@ use App\Http\Controllers\DeleteCommentController;
 use App\Http\Controllers\AttendingEventController;
 use App\Http\Controllers\AttendingSystemController;
 use App\Http\Controllers\SavedEventSystemController;
+use App\Models\SavedEvent;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,9 +38,11 @@ Route::get('/e', EventIndexController::class)->name('eventIndex');
 Route::get('/e/{id}', EventShowController::class)->name('eventShow');
 Route::get('/gallery', GalleryIndexController::class)->name('galleryIndex');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
+
+Route::get('/saved-events/get-detail/{id}', [SavedEventSystemController::class, 'tampilData']);
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -55,10 +60,25 @@ Route::middleware('auth')->group(function () {
         '/events-like/{id}',
         LikeSystemController::class
     )->name('events.like');
+
     Route::post(
         '/events-saved/{id}',
         SavedEventSystemController::class
     )->name('events.saved');
+
+    // Route::get(
+    //     '/coba-dulu',
+    //     [SavedEventSystemController::class,'coba']
+    //     );
+
+
+    Route::get('/event/muncul/{id}', SavedEventSystemController::class, 'muncul')->name('event.muncul');
+
+    // Route::post(
+    //     '/events-saved/get-detail',
+    //     SavedEventSystemController::class
+    // )->name('events.saved');
+
     Route::post('/events-attending/{id}', AttendingSystemController::class)->name('events.attending');
 
     Route::post('/events-like/{id}', LikeSystemController::class)->name('events.like');
@@ -68,6 +88,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/events/{id}/comments', StoreCommentController::class)->name('events.comments');
     Route::delete('events/{id}/comments/{comment}', DeleteCommentController::class)->name('events.comments.destroy');
 
+    Route::post('/tags', [TagController::class, 'store'])->name('tags.store');
 
     // Route ini untuk mendapatkan negara di seluruh dan melewati ID
     // Jadi dia akan menjadi ID dan kemudian kita menggunakan penutupan melewati model negara di sekitar model yang mengikat negara dan hanya mengembalikan respon kota negara Json

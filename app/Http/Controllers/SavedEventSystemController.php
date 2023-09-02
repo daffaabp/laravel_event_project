@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use Illuminate\Support\Facades\DB;
+use Laravel\Prompts\Concerns\Events;
 
 class SavedEventSystemController extends Controller
 {
@@ -22,5 +24,21 @@ class SavedEventSystemController extends Controller
             ]);
             return $savedEvent;
         }
+    }
+
+    public function coba() {
+        $data = ['andre', 19, 'Masak'];
+        return view('coba.index', compact('data'));
+    }
+
+    public function tampilData($id) {
+        $event = DB::table('events')->where('id', '=', $id)->select('id', 'title', 'description', 'address', 'image')->first();
+        // dd('event');
+        return response()->json($event, 200); // http code
+    }
+
+
+    public function muncul($id){
+        dd($id);
     }
 }

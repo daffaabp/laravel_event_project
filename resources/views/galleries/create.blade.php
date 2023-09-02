@@ -1,16 +1,16 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between">
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+            <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
                 {{ __('New Gallery') }}
             </h2>
         </div>
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
             <form method="POST" action="{{ route('galleries.store') }}" enctype="multipart/form-data"
-                class="p-4 bg-white dark:bg-slate-800 rounded-md space-y-2">
+                class="p-4 space-y-2 bg-white rounded-md dark:bg-slate-800">
                 @csrf
 
                 <div>
@@ -18,7 +18,7 @@
                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Caption</label>
                     <input type="text" id="caption" name="caption"
                         class="mb-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="Laravel event">
+                        placeholder="Caption Image">
                     @error('caption')
                         <div class="text-sm text-red-400">{{ $message }}</div>
                     @enderror
@@ -28,7 +28,7 @@
                     <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file_input">Upload
                         file</label>
                     <input
-                        class="mb-5 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                        class="block w-full mb-5 text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
                         id="file_input" type="file" name="image">
                     @error('image')
                         <div class="text-sm text-red-400">{{ $message }}</div>

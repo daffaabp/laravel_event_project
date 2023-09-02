@@ -1,3 +1,7 @@
+@php
+    use Carbon\Carbon;
+@endphp
+
 <x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between">
@@ -21,13 +25,7 @@
                                 Title
                             </th>
                             <th scope="col" class="px-6 py-3">
-                                Start Date
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Country
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Action
+                                Time Attending
                             </th>
                         </tr>
                     </thead>
@@ -39,21 +37,19 @@
                                     class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                     {{ $loop->iteration }}
                                 </th>
-                                <th scope="row"
-                                    class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    {{ $event->title }}
-                                </th>
-                                <td class="px-6 py-4">
-                                    {{ $event->start_date }}
-                                </td>
-                                <td class="px-6 py-4">
-                                    {{ $event->country->name }}
-                                </td>
-                                <td class="px-6 py-4">
+                                <th scope="px-6 py-4">
                                     <div class="flex space-x-2">
                                         <a href="{{ route('eventShow', $event) }}"
-                                            class="text-green-400 hover:text-green-600">View</a>
+                                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white hover:text-green-600"
+                                            target="blank_">{{ $event->title }}</a>
                                     </div>
+                                </th>
+                                <td class="px-6 py-4">
+                                    @if ($event->attendings->count() > 0)
+                                        {{ $event->attendings->first()->created_at->format('d F Y, H:i') }}
+                                    @else
+                                        No likes yet
+                                    @endif
                                 </td>
                             </tr>
                         @empty

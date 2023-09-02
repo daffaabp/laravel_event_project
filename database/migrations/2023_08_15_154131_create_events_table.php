@@ -16,9 +16,8 @@ return new class extends Migration
             $table->string('title');
             $table->string('slug')->unique();
             $table->longText('description');
-            $table->date('start_date');
+            $table->dateTime('start_datetime');
             $table->date('end_date');
-            $table->time('start_time');
             $table->string('image');
             $table->string('address');
             $table->integer('num_tickets');
