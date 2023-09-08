@@ -20,7 +20,8 @@
                                 class="p-2 text-sm text-white bg-indigo-400 rounded-md dark:text-gray-300">{{ $event->country->name }}</span>
                             <span class="flex flex-wrap space-x-2">
                                 @foreach ($event->tags as $tag)
-                                    <p class="p-1 text-sm rounded-md bg-slate-200 text-slate-900">{{ $tag->name }}</p>
+                                    <p class="p-1 text-sm rounded-md bg-slate-200 text-slate-900">{{ $tag->name }}
+                                    </p>
                                 @endforeach
                             </span>
                         </div>

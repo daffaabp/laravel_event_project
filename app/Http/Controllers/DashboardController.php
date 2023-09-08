@@ -24,4 +24,10 @@ class DashboardController extends Controller
             'ongoingEvents' => $ongoingEvents,
         ]);
     }
+
+    public function tampilData()
+    {
+        $events = Event::all();
+        return view('dashboard', compact('events'));
+    }
 }

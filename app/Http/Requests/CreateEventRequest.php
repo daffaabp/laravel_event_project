@@ -27,7 +27,7 @@ class CreateEventRequest extends FormRequest
         return [
             'title' => 'required|max:155|min:2',
             'address' => 'required|max:155|min:2',
-            'image' => 'required|image|mimes:jpg,png,jpeg,webp,svg|max:1000',  // upload gambar maksimal hanya bisa 1mb
+            'image' => 'required|image|mimes:jpg,png,jpeg,webp,svg|max:2048',  // upload gambar maksimal hanya bisa 1mb
             'start_datetime' => [
                 'required',
                 'date',
@@ -37,7 +37,23 @@ class CreateEventRequest extends FormRequest
             'end_date' => [
                 'required',
                 'date',
-                'after_or_equal:start_datetime',     // Memeriksa apakah tanggal setelah atau sama dengan start_datetime
+                'after_or_equal:start_datetime',    // Memeriksa apakah tanggal setelah atau sama dengan start_datetime
+                function ($attribute, $value, $fail) use ($now) {
+                    $startDate = $this->input('start_datetime');
+                    $endDate = $this->input('end_date');
+
+                    // Jika tanggal end_date sama dengan start_datetime, maka valid
+                    if ($startDate == $endDate) {
+                        return;
+                    }
+
+                    $startDate = Carbon::parse($startDate);
+                    $endDate = Carbon::parse($endDate);
+
+                    if ($endDate->lessThan($now) || $endDate->lessThan($startDate)) {
+                        $fail('The end date must be greater than or equal to start date and today.');
+                    }
+                },
                 ],
             'country_id' => 'required',
             'city_id' => 'required',

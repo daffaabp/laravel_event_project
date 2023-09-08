@@ -78,7 +78,7 @@
                     </div>
                 @endauth
                 <div class="flex flex-col p-4">
-                    <span class="mt-5 font-semibold text-indigo-600">Host Info</span>
+                    <span class="-mt-4 font-semibold text-indigo-600">Host Info</span>
                     <div class="flex p-2 mt-2 space-x-4 rounded-md bg-slate-200">
                         <span>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"

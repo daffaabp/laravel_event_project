@@ -33,12 +33,12 @@ use App\Models\SavedEvent;
 |
 */
 
-Route::get('/home', WelcomeController::class)->name('welcome');
+Route::get('/', WelcomeController::class)->name('welcome');
 Route::get('/e', EventIndexController::class)->name('eventIndex');
 Route::get('/e/{id}', EventShowController::class)->name('eventShow');
 Route::get('/gallery', GalleryIndexController::class)->name('galleryIndex');
 
-Route::get('/dashboard', [DashboardController::class, 'index'])
+Route::get('/dashboard', [DashboardController::class, 'tampilData'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
@@ -66,18 +66,8 @@ Route::middleware('auth')->group(function () {
         SavedEventSystemController::class
     )->name('events.saved');
 
-    // Route::get(
-    //     '/coba-dulu',
-    //     [SavedEventSystemController::class,'coba']
-    //     );
-
 
     Route::get('/event/muncul/{id}', SavedEventSystemController::class, 'muncul')->name('event.muncul');
-
-    // Route::post(
-    //     '/events-saved/get-detail',
-    //     SavedEventSystemController::class
-    // )->name('events.saved');
 
     Route::post('/events-attending/{id}', AttendingSystemController::class)->name('events.attending');
 

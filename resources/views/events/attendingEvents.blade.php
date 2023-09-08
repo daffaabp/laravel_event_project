@@ -27,6 +27,9 @@
                             <th scope="col" class="px-6 py-3">
                                 Time Attending
                             </th>
+                            <th scope="col" class="px-6 py-3">
+                                Address
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -50,6 +53,9 @@
                                     @else
                                         No likes yet
                                     @endif
+                                </td>
+                                <td class="px-6 py-4">
+                                    {{ $event->address }}   
                                 </td>
                             </tr>
                         @empty

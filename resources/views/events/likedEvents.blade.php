@@ -44,7 +44,7 @@
                                             target="blank_">{{ $event->title }}</a>
                                     </div>
                                 </th>
-                                <td class="px-6 py-4">
+                                <td class="px-6 py-4" style="width: 400px">
                                     @if ($event->likes->count() > 0)
                                         {{ $event->likes->first()->created_at->format('d F Y, H:i') }}
                                     @else

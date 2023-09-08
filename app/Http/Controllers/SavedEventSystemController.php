@@ -32,13 +32,8 @@ class SavedEventSystemController extends Controller
     }
 
     public function tampilData($id) {
-        $event = DB::table('events')->where('id', '=', $id)->select('id', 'title', 'description', 'address', 'image')->first();
+            $event = DB::table('events')->where('id', '=', $id)->select('id', 'title', 'description', 'address', 'image', 'num_tickets', 'country_id')->first();
         // dd('event');
         return response()->json($event, 200); // http code
-    }
-
-
-    public function muncul($id){
-        dd($id);
     }
 }

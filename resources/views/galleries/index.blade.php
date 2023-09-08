@@ -45,9 +45,8 @@
                                             action="{{ route('galleries.destroy', $gallery) }}">
                                             @csrf
                                             @method('DELETE')
-                                            <a href="{{ route('galleries.destroy', $gallery) }}"
-                                                onclick="event.preventDefault();
-                                        this.closest('form').submit();">
+                                            <a href="{{ route('galleries.destroy', $gallery) }}" class="confirm-buttons"
+                                                gambar-caption="{{ $gallery->caption }}">
                                                 Delete
                                             </a>
                                         </form>

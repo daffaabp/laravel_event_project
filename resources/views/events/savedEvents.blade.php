@@ -28,7 +28,7 @@
                                 Start Date
                             </th>
                             <th scope="col" class="px-6 py-3">
-                                Country
+                                Province
                             </th>
                             <th scope="col" class="px-6 py-3">
                                 Action
@@ -43,12 +43,9 @@
                                     class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                     {{ $loop->iteration }}
                                 </th>
-                                <th scope="px-6 py-4">
-                                    <div class="flex space-x-2">
-                                        <a href="{{ route('eventShow', $event) }}"
-                                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white hover:text-green-600"
-                                            target="blank_">{{ $event->title }}</a>
-                                    </div>
+                                <th scope="row"
+                                    class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    {{ $event->title }}
                                 </th>
                                 <td class="px-6 py-4">
                                     {{ Carbon::parse($event->start_datetime)->format('d F Y') }}
@@ -136,6 +133,14 @@
                                     <tr class="border-b border-gray-200 dark:border-gray-700">
                                         <th scope="row"
                                             class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
+                                            Num Tickets
+                                        </th>
+                                        <td class="px-6 py-4">:</td>
+                                        <td class="px-6 py-4" id="event-detail-tickets"></td>
+                                    </tr>
+                                    <tr class="border-b border-gray-200 dark:border-gray-700">
+                                        <th scope="row"
+                                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
                                             Image
                                         </th>
                                         <td class="px-6 py-4">:</td>
@@ -147,7 +152,6 @@
                                 </tbody>
                             </table>
                         </div>
-
 
                     </div>
 
@@ -208,7 +212,8 @@
                 document.querySelector('#event-detail-title').textContent = '';
                 document.querySelector('#event-detail-desc').textContent = '';
                 document.querySelector('#event-detail-address').textContent = '';
-                document.querySelector('#event-detail-image').innerHTML = '';
+                document.querySelector('#event-detail-tickets').textContent = '';
+                document.querySelector('#event-detail-image').file = '';
             });
 
             document.querySelector('#table-body').addEventListener("click", function(e) {
@@ -229,23 +234,32 @@
                         success: function(data) {
                             // console.log(data);
                             // todo set value into modal
+                            // Show Title Event
                             document.querySelector('#event-detail-title').textContent = data
                                 .title;
+
+                            // Show Description
                             document.querySelector('#event-detail-desc').textContent = data
                                 .description;
+
+                            // Show Address
                             document.querySelector('#event-detail-address').textContent =
                                 data
                                 .address;
-                            // var imageElement = document.querySelector('#event-detail-image');
-                            // imageElement.src = 'public/storage/event' +
-                            //     data.image;
-                            var path = response.path;
-                            console.log(path);
 
-                            $.each(response, function(key, value) {
-                                $("#event-detail-image").attr('public/storage/event',
-                                    value.path);
-                            })
+                            // Show Num Tickets
+                            document.querySelector('#event-detail-tickets').textContent = data
+                                .num_tickets;
+
+                            // Show Image
+                            var image = data.image;
+                            console.log(image);
+
+
+                            $("#event-detail-image").attr('src', '/storage/' + image);
+
+
+                            // Handle Error
                         },
                         error: function(request, status, error) {
                             // alert(request.responseText);
